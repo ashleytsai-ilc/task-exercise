@@ -7,6 +7,7 @@ name = "pypi"
 flask = "==2.0.3"
 flask-pydantic = "*"
 pydantic = "*"
+pytest = "*"
 
 [dev-packages]
 
