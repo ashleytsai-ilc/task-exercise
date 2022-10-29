@@ -3,9 +3,9 @@ from flask import Flask
 from flask_pydantic import validate
 
 from schema import TaskStatus
-from schema.response import MultiResponse, Response
+from schema.response import MultiResponse, Response, ErrResponse
 from schema.response.task import Task
-from schema.request.task import CreateTask
+from schema.request.task import CreateTask, UpdateTask
 
 app = Flask(__name__)
 
@@ -31,3 +31,25 @@ def create_task(body: CreateTask):
     tasks.append(task)
 
     return Response[Task](result=task)
+
+
+@app.route("/task/<id>", methods=["PUT"])
+@validate()
+def update_task(id: int, body: UpdateTask):
+    """
+    更新任務
+    """
+    if id != body.id:
+        return ErrResponse(msg="id not match"), HTTPStatus.UNPROCESSABLE_ENTITY
+
+    request_task = {}
+    for task in tasks:
+        if task["id"] == id:
+            request_task = body.__dict__
+            task.update(request_task)
+            break
+
+    if request_task == {}:
+        return ErrResponse(msg=f"task id: {id} not found"), HTTPStatus.NOT_FOUND
+
+    return Response[Task](result=request_task)
