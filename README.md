@@ -6,3 +6,11 @@
 ```script
 docker-compose up
 ```
+
+######
+Unit Test
+
+
+```script
+pytest -v
+```
