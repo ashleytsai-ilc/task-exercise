@@ -53,3 +53,22 @@ def update_task(id: int, body: UpdateTask):
         return ErrResponse(msg=f"task id: {id} not found"), HTTPStatus.NOT_FOUND
 
     return Response[Task](result=request_task)
+
+
+@app.route("/task/<id>", methods=["DELETE"])
+@validate()
+def delete_task(id: int):
+    """
+    刪除任務
+    """
+    deleted = False
+    for i in range(len(tasks)):
+        if tasks[i]["id"] == id:
+            del tasks[i]
+            deleted = True
+            break
+
+    if not deleted:
+        return ErrResponse(msg=f"task id: {id} not found"), HTTPStatus.NOT_FOUND
+
+    return ""
